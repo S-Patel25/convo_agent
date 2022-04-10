@@ -7,12 +7,20 @@ from chatterbot.trainers import ListTrainer  # importing neccasary packages
 from textblob import TextBlob
 from nltk.corpus import wordnet
 import tkinter as tk
+import wikipediaapi
+import wolframalpha
+import wolframclient
 
 nltk.download('omw-1.4')
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
 nltk.download('words')
+
+app_id = '7XXUQ4-Q2Y2KA4UQA'
+client = wolframalpha.Client(app_id)
+
+
 sports_bot = ChatBot(name='sportBot', read_only=False,
                      logic_adapters=['chatterbot.logic.BestMatch'])
 # intializing the both
@@ -66,7 +74,7 @@ baseball_talk = ['What do you think of baseball?', 'Baseball is very fun, but ca
                  'How many players can play baseball?', 'At any given time, there are 9 players from the defense team and 1 player up for batting to make a total of 10 players', 'What do you do when you are on defense?',
                  'When you are on defense, your goal is to prevent the other team from getting a homerun by working with your teammates', 'what is the fastest pitch ever?', 'the fastest pitch ever is 105.1 mph', 'who won the 2021 world series?',
                  'The Atlanta Braves won the 2021 world series', 'What is a foul?', 'Simply put, a foul is when the ball goes out of bounds or was not pitched properly', 'What is a strike?',
-                 'A strike is when a batter swings and misses the ball in the strike zone', 'What kind of equipment do baseball players need when batting?', 'When batting, players need to wear a helmet, and use a baseball bat to hit the ball']
+                 'A strike is when a batter swings and misses the ball in the strike zone', 'What kind of equipment do baseball players need when batting?', 'When batting, players need to wear a helmet, and use a baseball bat to hit the ball', 'Steph Curry', 'Steph Curry is the best shooter in the NBA']
 
 football_talk = ["Fun fact about football", "The NFL had its first event in 1920. Who's your favourite team? ", "I like the Seahawks", "How do you score a point in Football?",
                  "You can score a touchdown by taking the ball to the oppposite endzone for 6 points, and an addition 1 point for the field goal", "Is tackling allowed in football?",
@@ -99,16 +107,16 @@ def NameErrorRec(sent):
         else:
             print("No named recognition")
             isName = False
-            #entities.append(' '.join(c[0] for c in i))
+            # entities.append(' '.join(c[0] for c in i))
             # labels.append(i.label())
     return isName
 
 # for i in range(len(i)):
    # data=[entities[i],labels[i]]
    # head=["Entities","Labels"]
-#print(tabulate(data,headers=head, tablefmt="grid"))
+# print(tabulate(data,headers=head, tablefmt="grid"))
 
-    #words= nltk.pos_tag(sent)
+    # words= nltk.pos_tag(sent)
 
 # Sentiment Analysis
 
@@ -119,6 +127,7 @@ def Sentiment(sent):
     return sentiment
 # Synonym Recognition
 
+
 responses = []
 
 
@@ -128,10 +137,16 @@ def func(text):
         str(sports_bot.get_response(question))
     print(response)
     responses.append(response)
-    label.config(text=responses)
     PosTag(question)
     print("User sentiment:", Sentiment(question))
     NameErrorRec(question)
+    res = client.query(question)
+    for pod in res.pods:
+        for sub in pod.subpods:
+            responses.append(str(sub.plaintext)[0:40])
+
+    label.config(text=responses)
+
     # Synonym(question)
 
 
