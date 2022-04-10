@@ -18,7 +18,7 @@ nltk.download('averaged_perceptron_tagger')
 nltk.download('maxent_ne_chunker')
 nltk.download('words')
 
-app_id = '7XXUQ4-Q2Y2KA4UQA'
+app_id = ''
 client = wolframalpha.Client(app_id)
 
 wikiAPI = wikipediaapi.Wikipedia('en')
