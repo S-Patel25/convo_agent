@@ -10,6 +10,7 @@ import tkinter as tk
 import wikipediaapi
 import wolframalpha
 import wolframclient
+import wikipediaapi
 
 nltk.download('omw-1.4')
 nltk.download('punkt')
@@ -19,6 +20,8 @@ nltk.download('words')
 
 app_id = '7XXUQ4-Q2Y2KA4UQA'
 client = wolframalpha.Client(app_id)
+
+wikiAPI = wikipediaapi.Wikipedia('en')
 
 
 sports_bot = ChatBot(name='sportBot', read_only=False,
@@ -133,17 +136,26 @@ responses = []
 
 def func(text):
     question = text
-    response = "\n\n" + str(text) + " : " + \
+    response = "\n\n" + str(text) + " : " + "\n" + \
         str(sports_bot.get_response(question))
     print(response)
     responses.append(response)
     PosTag(question)
     print("User sentiment:", Sentiment(question))
     NameErrorRec(question)
+
+    tagged = PosTag(question)
     res = client.query(question)
     for pod in res.pods:
         for sub in pod.subpods:
-            responses.append(str(sub.plaintext)[0:40])
+            responses.append(str(sub.plaintext)[0:10])
+
+    if(tagged):
+        for x in tagged:
+            if x[1] == 'NNP' or x[1] == 'NNS' or x[1] == 'NN':
+                wikiPage = wikiAPI.page(x[0])
+                responses.append("\n\nWiki API Says!: " + x[0] + ": ")
+                responses.append(wikiPage.summary[0:50])
 
     label.config(text=responses)
 
