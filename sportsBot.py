@@ -26,7 +26,8 @@ wikiAPI = wikipediaapi.Wikipedia('en')
 
 sports_bot = ChatBot(name='sportBot', read_only=False,
                      logic_adapters=['chatterbot.logic.BestMatch'])
-# intializing the both
+
+# intializing the bot
 intial_talk = ['hi there!',
                'hi!',
                'how is it going?',
@@ -43,7 +44,7 @@ intial_talk = ['hi there!',
                'what\'s your name?',
                'I\'m SportsBot. Ask me a sports question!']
 basketball_talk = ['Fun fact about basketball',
-                   'Basketball was invented in 1891!', 'Who is your favourite team?', 'I like Golden State', 'Do you play basketball?', 'I cannot because I am a bot, silly goose!']
+                   'Basketball was invented in 1891!', 'Who is your favourite team?', 'I like Golden State', 'Do you play basketball?', 'I cannot because I am a bot, silly goose!', 'basketball', 'Steph Curry is an amazing player at basketball!']
 
 
 hockey_talk = ['What do you think of hockey?', 'Hockey is a great sport, who\'s your favourite team?',
@@ -79,21 +80,22 @@ baseball_talk = ['What do you think of baseball?', 'Baseball is very fun, but ca
                  'The Atlanta Braves won the 2021 world series', 'What is a foul?', 'Simply put, a foul is when the ball goes out of bounds or was not pitched properly', 'What is a strike?',
                  'A strike is when a batter swings and misses the ball in the strike zone', 'What kind of equipment do baseball players need when batting?', 'When batting, players need to wear a helmet, and use a baseball bat to hit the ball', 'Steph Curry', 'Steph Curry is the best shooter in the NBA']
 
-football_talk = ["Fun fact about football", "The NFL had its first event in 1920. Who's your favourite team? ", "I like the Seahawks", "How do you score a point in Football?",
+football_talk = ["football", "The NFL had its first event in 1920. Who's your favourite team? ", "I like the Seahawks", "How do you score a point in Football?",
                  "You can score a touchdown by taking the ball to the oppposite endzone for 6 points, and an addition 1 point for the field goal", "Is tackling allowed in football?",
                  "Usually yes, football is a contact sport and most leagues allow tackling as long as it's within bounds", "How do players stay protected?", "Usually players wear protective gear such as helmets and shoulder pads",
                  "What's the most successful team in the NFL?", "The Steelers and the Patriots both have 6 Super-Bowl wins, placing them at the top"]
+
 # POS tag
 
 
 def PosTag(sent):
     list = []
-    # for i in sent:
     tokens = nltk.word_tokenize(sent)
     newtokens = nltk.pos_tag(tokens)
     print(newtokens)
     list.append(newtokens)
     return newtokens
+
 # NER
 
 
@@ -110,16 +112,7 @@ def NameErrorRec(sent):
         else:
             print("No named recognition")
             isName = False
-            # entities.append(' '.join(c[0] for c in i))
-            # labels.append(i.label())
     return isName
-
-# for i in range(len(i)):
-   # data=[entities[i],labels[i]]
-   # head=["Entities","Labels"]
-# print(tabulate(data,headers=head, tablefmt="grid"))
-
-    # words= nltk.pos_tag(sent)
 
 # Sentiment Analysis
 
@@ -128,7 +121,6 @@ def Sentiment(sent):
     blob = TextBlob(sent)
     sentiment = blob.sentiment.polarity
     return sentiment
-# Synonym Recognition
 
 
 responses = []
@@ -148,18 +140,16 @@ def func(text):
     res = client.query(question)
     for pod in res.pods:
         for sub in pod.subpods:
-            responses.append(str(sub.plaintext)[0:10])
+            responses.append(str(sub.plaintext)[0:50])
 
     if(tagged):
         for x in tagged:
             if x[1] == 'NNP' or x[1] == 'NNS' or x[1] == 'NN':
                 wikiPage = wikiAPI.page(x[0])
-                responses.append("\n\nWiki API Says!: " + x[0] + ": ")
-                responses.append(wikiPage.summary[0:50])
+                responses.append("\n\nWiki API Says!: " + x[0] + ": " + "...")
+                responses.append(wikiPage.summary[0:100])
 
     label.config(text=responses)
-
-    # Synonym(question)
 
 
 root = tk.Tk()
